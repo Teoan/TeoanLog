@@ -1,20 +1,12 @@
 package io.github.teoan.log.core.handle;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.teoan.log.core.annotation.TeoanLog;
+import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.ThrowingLog;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
 
 /**
  * @author Teoan
@@ -33,42 +25,32 @@ public class PrintLogHandle implements LogHandle {
      *
      */
     @Override
-    public void doAround(ProceedingJoinPoint joinPoint, HttpServletRequest request,Long execTime,Object result) throws Throwable {
-        //记录请求记录
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(!ObjectUtils.isEmpty(attributes)){
-            request = attributes.getRequest();
-        }
-
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        //获取接入点方法
-        Method method = methodSignature.getMethod();
-        TeoanLog loggerAnnotation = method.getAnnotation(TeoanLog.class);
+    public void doAround(AroundLog aroundLog) throws Throwable {
         // 打印请求相关参数
         log.info("========================================== Start ==========================================");
         // 打印日志级别
-        log.info("SEVERITY        : {}", loggerAnnotation.severity().getSeverity());
+        log.info("SEVERITY        : {}", aroundLog.getSeverity());
         // 打印日志操作模块
-        log.info("OPER SOURCE     : {}", loggerAnnotation.operSource());
+        log.info("OPER SOURCE     : {}", aroundLog.getOperSource());
         // 打印日志操作名称
-        log.info("OPER NAME       : {}", loggerAnnotation.operName());
+        log.info("OPER NAME       : {}", aroundLog.getOperName());
         // 打印日志操作描述
-        log.info("DESCRIPTION     : {}", loggerAnnotation.description());
+        log.info("DESCRIPTION     : {}", aroundLog.getDescription());
         // 打印请求 url
-        log.info("URL             : {}", request.getRequestURL().toString());
+        log.info("URL             : {}", aroundLog.getUrl());
         // 打印 Http method
-        log.info("HTTP Method     : {}", request.getMethod());
+        log.info("HTTP Method     : {}", aroundLog.getHttpMethod());
         // 打印调用 controller 的全路径以及执行方法
-        log.info("Class Method    : {}.{}", methodSignature.getDeclaringTypeName(), methodSignature.getName());
+        log.info("Class Method    : {}.{}", aroundLog.getClassName(), aroundLog.getMethod());
         // 打印请求的 IP
-        log.info("IP              : {}", request.getRemoteAddr());
+        log.info("IP              : {}", aroundLog.getIp());
         // 打印请求入参
-        log.info("Request Args    : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(joinPoint.getArgs()));
+        log.info("Request Args    : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(aroundLog.getArgs()));
 
         // 打印出参
-        log.info("Response Args   : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
+        log.info("Response Args   : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(aroundLog.getResult()));
         // 执行耗时
-        log.info("Time-Consuming  : {} ms", execTime);
+        log.info("Time-Consuming  : {} ms", aroundLog.getExecTime());
         log.info("=========================================== End ===========================================");
     }
 
@@ -77,9 +59,9 @@ public class PrintLogHandle implements LogHandle {
      *
      */
     @Override
-    public void doAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
+    public void doAfterThrowing(ThrowingLog throwingLog) {
         log.error("========================================== Error ===========================================");
-        log.error("Exception Messages      : {}", throwable.getMessage());
+        log.error("Exception Messages      : {}", throwingLog.getThrowable().getMessage());
         // 执行耗时
         log.error("=========================================== End ===========================================");
     }

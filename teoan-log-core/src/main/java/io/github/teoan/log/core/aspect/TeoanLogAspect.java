@@ -2,8 +2,11 @@ package io.github.teoan.log.core.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.teoan.log.core.annotation.TeoanLog;
+import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.handle.LogHandle;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -48,18 +52,38 @@ public class TeoanLogAspect {
     @Around("teoanLog()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         //拦截方法执行前
-        long startTime = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
         //记录请求记录
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (!ObjectUtils.isEmpty(attributes)) {
             request = attributes.getRequest();
         }
-        //执行拦截方法
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        //获取接入点方法
+        Method method = methodSignature.getMethod();
+        TeoanLog loggerAnnotation = method.getAnnotation(TeoanLog.class);
+        //执行拦截方法 记录耗时
+        stopWatch.start();
         Object result = joinPoint.proceed();
+        stopWatch.stop();
+        AroundLog aroundLog = AroundLog.builder()
+                .severity(loggerAnnotation.severity())
+                .operSource(loggerAnnotation.operSource())
+                .operName(loggerAnnotation.operName())
+                .description(loggerAnnotation.description())
+                .ip(request.getRemoteAddr())
+                .url(request.getRequestURL().toString())
+                .httpMethod(request.getMethod())
+                .className(methodSignature.getDeclaringTypeName())
+                .method(methodSignature.getName())
+                .args(joinPoint.getArgs())
+                .result(result)
+                .execTime(stopWatch.getTotalTimeMillis())
+                .build();
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
                 try {
-                    logHandle.doAround(joinPoint, request, System.currentTimeMillis() - startTime, result);
+                    logHandle.doAround(aroundLog);
                 } catch (Throwable e) {
                     log.error("LogHandle Error,LogHandle name[{}]", logHandle.getClass().getName(), e);
                 }
@@ -72,9 +96,10 @@ public class TeoanLogAspect {
 
     @AfterThrowing(value = "teoanLog()", throwing = "throwable")
     public void doAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
+        ThrowingLog throwingLog = ThrowingLog.builder().throwable(throwable).build();
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
-                logHandle.doAfterThrowing(joinPoint, throwable);
+                logHandle.doAfterThrowing(throwingLog);
             });
         }
     }
