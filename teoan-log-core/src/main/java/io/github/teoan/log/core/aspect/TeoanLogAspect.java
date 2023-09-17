@@ -1,17 +1,18 @@
 package io.github.teoan.log.core.aspect;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.teoan.log.core.annotation.TeoanLog;
+import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.AroundLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.handle.LogHandle;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -53,33 +54,13 @@ public class TeoanLogAspect {
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         //拦截方法执行前
         StopWatch stopWatch = new StopWatch();
-        //记录请求记录
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (!ObjectUtils.isEmpty(attributes)) {
-            request = attributes.getRequest();
-        }
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        //获取接入点方法
-        Method method = methodSignature.getMethod();
-        TeoanLog loggerAnnotation = method.getAnnotation(TeoanLog.class);
         //执行拦截方法 记录耗时
         stopWatch.start();
         Object result = joinPoint.proceed();
         stopWatch.stop();
-        AroundLog aroundLog = AroundLog.builder()
-                .severity(loggerAnnotation.severity())
-                .operSource(loggerAnnotation.operSource())
-                .operName(loggerAnnotation.operName())
-                .description(loggerAnnotation.description())
-                .ip(request.getRemoteAddr())
-                .url(request.getRequestURL().toString())
-                .httpMethod(request.getMethod())
-                .className(methodSignature.getDeclaringTypeName())
-                .method(methodSignature.getName())
-                .args(joinPoint.getArgs())
-                .result(result)
-                .execTime(stopWatch.getTotalTimeMillis())
-                .build();
+        AroundLog aroundLog = buildBaseLog(joinPoint, new AroundLog());
+        aroundLog.setExecTime(stopWatch.getTotalTimeMillis());
+        aroundLog.setResult(result);
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
                 try {
@@ -96,12 +77,41 @@ public class TeoanLogAspect {
 
     @AfterThrowing(value = "teoanLog()", throwing = "throwable")
     public void doAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
-        ThrowingLog throwingLog = ThrowingLog.builder().throwable(throwable).build();
+        ThrowingLog throwingLog = buildBaseLog(joinPoint, new ThrowingLog());
+        throwingLog.setThrowable(throwable);
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
                 logHandle.doAfterThrowing(throwingLog);
             });
         }
+    }
+
+
+    /**
+     * 构建日志对象
+     */
+    private <T extends BaseLog> T buildBaseLog(JoinPoint joinPoint, T t) {
+        //记录请求记录
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (!ObjectUtils.isEmpty(attributes)) {
+            request = attributes.getRequest();
+        }
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        //获取接入点方法
+        Method method = methodSignature.getMethod();
+        TeoanLog loggerAnnotation = method.getAnnotation(TeoanLog.class);
+        t.setSeverity(loggerAnnotation.severity());
+        t.setOperSource(loggerAnnotation.operSource());
+        t.setOperName(loggerAnnotation.operName());
+        t.setDescription(loggerAnnotation.description());
+        t.setIp(request.getRemoteAddr());
+        t.setUrl(request.getRequestURL().toString());
+        t.setHttpMethod(request.getMethod());
+        t.setClassName(methodSignature.getDeclaringTypeName());
+        t.setMethod(methodSignature.getName());
+        t.setArgs(joinPoint.getArgs());
+        return t;
+
     }
 
 }

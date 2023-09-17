@@ -18,7 +18,8 @@ public class TeoanLogController {
     @PostMapping("/testTeoanLog")
     @TeoanLog(operSource = "Teoan", operName = "测试", severity = LogSeverity.INFO, description = "测试日志打印")
     public TeoanLogDTO testTeoanLog(@RequestBody TeoanLogDTO teoanLogDTO) {
-        return teoanLogDTO;
+        throw new RuntimeException("测试异常");
+//        return teoanLogDTO;
     }
 
 
