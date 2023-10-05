@@ -29,10 +29,8 @@ public class PrintLogHandle implements LogHandle {
     public void doAround(AroundLog aroundLog) throws Throwable {
 
         printBaseLog(aroundLog);
-
         // 打印请求入参
         log.info("Request Args    : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(aroundLog.getArgs()));
-
         // 打印出参
         log.info("Response Args   : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(aroundLog.getResult()));
         // 执行耗时

@@ -1,8 +1,8 @@
 package io.github.teoan.log.core.aspect;
 
 import io.github.teoan.log.core.annotation.TeoanLog;
-import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.handle.LogHandle;
 import lombok.extern.slf4j.Slf4j;
@@ -104,9 +104,9 @@ public class TeoanLogAspect {
         t.setOperSource(loggerAnnotation.operSource());
         t.setOperName(loggerAnnotation.operName());
         t.setDescription(loggerAnnotation.description());
-        t.setIp(request.getRemoteAddr());
-        t.setUrl(request.getRequestURL().toString());
-        t.setHttpMethod(request.getMethod());
+        t.setIp(ObjectUtils.isEmpty(request) ? "" : request.getRemoteAddr());
+        t.setUrl(ObjectUtils.isEmpty(request) ? "" : request.getRequestURL().toString());
+        t.setHttpMethod(ObjectUtils.isEmpty(request) ? "" : request.getMethod());
         t.setClassName(methodSignature.getDeclaringTypeName());
         t.setMethod(methodSignature.getName());
         t.setArgs(joinPoint.getArgs());

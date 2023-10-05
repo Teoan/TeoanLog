@@ -3,3 +3,5 @@ server:
 spring:
   application:
     name: teoanLog
+  elasticsearch:
+    uris: localhost:9200

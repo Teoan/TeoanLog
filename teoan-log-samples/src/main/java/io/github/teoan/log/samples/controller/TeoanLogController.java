@@ -16,11 +16,16 @@ public class TeoanLogController {
 
 
     @PostMapping("/testTeoanLog")
-    @TeoanLog(operSource = "Teoan", operName = "测试", severity = LogSeverity.INFO, description = "测试日志打印")
+    @TeoanLog(operSource = "teoanLog", operName = "测试", severity = LogSeverity.INFO, description = "测试日志打印")
     public TeoanLogDTO testTeoanLog(@RequestBody TeoanLogDTO teoanLogDTO) {
-        throw new RuntimeException("测试异常");
-//        return teoanLogDTO;
+        return teoanLogDTO;
     }
 
+
+    @PostMapping("/testTeoanException")
+    @TeoanLog(operSource = "teoanLog", operName = "测试异常", severity = LogSeverity.INFO, description = "测试异常")
+    public TeoanLogDTO testTeoanException(@RequestBody TeoanLogDTO teoanLogDTO) {
+        throw new RuntimeException("测试异常");
+    }
 
 }
