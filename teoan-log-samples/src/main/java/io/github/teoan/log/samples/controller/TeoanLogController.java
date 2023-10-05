@@ -16,7 +16,7 @@ public class TeoanLogController {
 
 
     @PostMapping("/testTeoanLog")
-    @TeoanLog(operSource = "teoanLog", operName = "测试", severity = LogSeverity.INFO, description = "测试日志打印")
+    @TeoanLog(operName = "测试", severity = LogSeverity.INFO, description = "测试日志打印")
     public TeoanLogDTO testTeoanLog(@RequestBody TeoanLogDTO teoanLogDTO) {
         return teoanLogDTO;
     }
