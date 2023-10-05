@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -41,6 +42,13 @@ public class TeoanLogAspect {
 
     @Resource
     List<LogHandle> logHandleList;
+
+    /**
+     * 应用名称
+     */
+    @Value(value = "${spring.application.name}")
+    String appName;
+
 
     /**
      * 配置切入点
@@ -101,7 +109,7 @@ public class TeoanLogAspect {
         Method method = methodSignature.getMethod();
         TeoanLog loggerAnnotation = method.getAnnotation(TeoanLog.class);
         t.setSeverity(loggerAnnotation.severity());
-        t.setOperSource(loggerAnnotation.operSource());
+        t.setOperSource(ObjectUtils.isEmpty(loggerAnnotation.operSource())? appName : loggerAnnotation.operSource());
         t.setOperName(loggerAnnotation.operName());
         t.setDescription(loggerAnnotation.description());
         t.setIp(ObjectUtils.isEmpty(request) ? "" : request.getRemoteAddr());
