@@ -7,6 +7,8 @@ import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.repository.AroundLogRepository;
 import io.github.teoan.log.core.repository.ThrowingLogRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -18,6 +20,7 @@ import java.io.StringWriter;
  * @since 2023/9/19 22:02
  */
 @Component
+@ConditionalOnClass(ElasticsearchRestTemplate.class)
 public class EsLogHandle implements LogHandle {
 
 

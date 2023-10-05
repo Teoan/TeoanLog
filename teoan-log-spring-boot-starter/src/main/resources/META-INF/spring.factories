@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.teoan.log.auto.configure.TeoanLogConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.teoan.log.auto.configure.TeoanLogConfiguration,\
+  io.github.teoan.log.auto.configure.TeoanLogEsConfiguration
