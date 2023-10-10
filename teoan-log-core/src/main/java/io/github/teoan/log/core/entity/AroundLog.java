@@ -21,7 +21,7 @@ public class AroundLog extends BaseLog {
     Object result;
 
     /**
-     * 执行时间
+     * 执行耗时
      */
     Long execTime;
 

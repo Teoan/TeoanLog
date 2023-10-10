@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Teoan
  * @since 2023/9/17 11:10
@@ -68,6 +70,11 @@ public abstract class BaseLog {
      * 方法入参
      */
     Object[] args;
+
+    /**
+     * 执行时间
+     */
+    LocalDateTime dateTime;
 
 
 }

@@ -24,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -118,6 +119,7 @@ public class TeoanLogAspect {
         t.setClassName(methodSignature.getDeclaringTypeName());
         t.setMethod(methodSignature.getName());
         t.setArgs(joinPoint.getArgs());
+        t.setDateTime(LocalDateTime.now());
         return t;
 
     }
