@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Teoan
@@ -82,5 +84,11 @@ public abstract class BaseLogDO implements Serializable {
     @Field(type = FieldType.Object)
     Object[] args;
 
+
+    /**
+     * 执行时间
+     */
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis)
+    LocalDateTime dateTime;
 
 }

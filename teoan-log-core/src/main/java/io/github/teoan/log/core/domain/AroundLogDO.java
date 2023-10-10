@@ -39,7 +39,7 @@ public class AroundLogDO extends BaseLogDO implements Serializable {
     private Object result;
 
     /**
-     * 执行时间
+     * 执行耗时
      */
     @Field(type = FieldType.Long)
     private Long execTime;

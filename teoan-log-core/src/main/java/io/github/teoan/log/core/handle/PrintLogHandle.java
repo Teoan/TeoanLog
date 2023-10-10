@@ -68,5 +68,7 @@ public class PrintLogHandle implements LogHandle {
         log.info("Class Method    : {}.{}", baseLog.getClassName(), baseLog.getMethod());
         // 打印请求的 IP
         log.info("IP              : {}", baseLog.getIp());
+        // 打印执行时间
+        log.info("DATE TIME              : {}", baseLog.getDateTime());
     }
 }
