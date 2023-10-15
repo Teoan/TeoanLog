@@ -23,7 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "throwing_log")
-public class ThrowingLogDO extends BaseLogDO implements Serializable {
+public class ThrowingLogDO extends BaseLogDO implements Serializable,MongoDBDO {
 
     /**
      * 主建

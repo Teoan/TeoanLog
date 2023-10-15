@@ -4,11 +4,11 @@ import io.github.teoan.log.core.domain.AroundLogDO;
 import io.github.teoan.log.core.domain.ThrowingLogDO;
 import io.github.teoan.log.core.entity.AroundLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
-import io.github.teoan.log.core.repository.es.EsAroundLogRepository;
-import io.github.teoan.log.core.repository.es.EsThrowingLogRepository;
+import io.github.teoan.log.core.repository.mongo.MongoAroundLogRepository;
+import io.github.teoan.log.core.repository.mongo.MongoThrowingLogRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -18,15 +18,15 @@ import javax.annotation.Resource;
  * @since 2023/9/19 22:02
  */
 @Component
-@ConditionalOnClass(ElasticsearchRestTemplate.class)
-public class EsLogHandle implements LogHandle {
+@ConditionalOnClass(MongoTemplate.class)
+public class MongoLogHandle implements LogHandle {
 
 
     @Resource
-    EsAroundLogRepository aroundLogRepository;
+    MongoAroundLogRepository aroundLogRepository;
 
     @Resource
-    EsThrowingLogRepository throwingLogRepository;
+    MongoThrowingLogRepository throwingLogRepository;
 
     /**
      * 处理环绕通知

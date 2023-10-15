@@ -5,3 +5,10 @@ spring:
     name: teoanLog
   elasticsearch:
     uris: localhost:9200
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: teoan
+      password: passw0rd
+      database: teoan

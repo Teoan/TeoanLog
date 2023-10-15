@@ -20,4 +20,9 @@ public class ThrowingLog extends BaseLog {
      */
     Throwable throwable;
 
+
+    /**
+     * 异常栈内容
+     */
+    private String stackTraceString;
 }
