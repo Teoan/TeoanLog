@@ -23,6 +23,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -88,6 +90,11 @@ public class TeoanLogAspect {
     public void doAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
         ThrowingLog throwingLog = buildBaseLog(joinPoint, new ThrowingLog());
         throwingLog.setThrowable(throwable);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        throwable.printStackTrace(pw);
+        String stackTraceString = sw.toString();
+        throwingLog.setStackTraceString(stackTraceString);
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
                 logHandle.doAfterThrowing(throwingLog);

@@ -23,7 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "around_log")
-public class AroundLogDO extends BaseLogDO implements Serializable {
+public class AroundLogDO extends BaseLogDO implements Serializable,MongoDBDO {
 
     /**
      * 主建

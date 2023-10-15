@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  * @author Teoan
  * @since 2023/10/5 17:32
  */
-@EnableElasticsearchRepositories(basePackages = "io.github.teoan.log")
+@EnableElasticsearchRepositories(basePackages = "io.github.teoan.log.core.repository.es")
 @Configuration
 @ConditionalOnClass(ElasticsearchRestTemplate.class)
 public class TeoanLogEsConfiguration {
