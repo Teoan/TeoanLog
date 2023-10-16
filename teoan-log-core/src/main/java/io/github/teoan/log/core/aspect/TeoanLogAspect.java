@@ -4,7 +4,7 @@ import io.github.teoan.log.core.annotation.TeoanLog;
 import io.github.teoan.log.core.entity.AroundLog;
 import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
-import io.github.teoan.log.core.handle.LogHandle;
+import io.github.teoan.log.core.handle.LogHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,7 +14,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StopWatch;
@@ -27,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * @author Teoan
@@ -40,11 +38,9 @@ import java.util.List;
 public class TeoanLogAspect {
     private HttpServletRequest request = null;
 
-    @Resource
-    private ThreadPoolTaskExecutor taskExecutor;
 
     @Resource
-    List<LogHandle> logHandleList;
+    LogHandler logHandler;
 
     /**
      * 应用名称
@@ -72,16 +68,7 @@ public class TeoanLogAspect {
         AroundLog aroundLog = buildBaseLog(joinPoint, new AroundLog());
         aroundLog.setExecTime(stopWatch.getTotalTimeMillis());
         aroundLog.setResult(result);
-        for (LogHandle logHandle : logHandleList) {
-            taskExecutor.execute(() -> {
-                try {
-                    logHandle.doAround(aroundLog);
-                } catch (Throwable e) {
-                    log.error("LogHandle Error,LogHandle name[{}]", logHandle.getClass().getName(), e);
-                }
-            });
-
-        }
+        logHandler.doAround(aroundLog);
         return result;
     }
 
@@ -95,11 +82,7 @@ public class TeoanLogAspect {
         throwable.printStackTrace(pw);
         String stackTraceString = sw.toString();
         throwingLog.setStackTraceString(stackTraceString);
-        for (LogHandle logHandle : logHandleList) {
-            taskExecutor.execute(() -> {
-                logHandle.doAfterThrowing(throwingLog);
-            });
-        }
+        logHandler.doAfterThrowing(throwingLog);
     }
 
 
