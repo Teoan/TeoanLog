@@ -3,8 +3,10 @@ package io.github.teoan.log.core.handle;
 import io.github.teoan.log.core.domain.AroundLogDO;
 import io.github.teoan.log.core.domain.ThrowingLogDO;
 import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.OrdinaryLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.repository.es.EsAroundLogRepository;
+import io.github.teoan.log.core.repository.es.EsOrdinaryLogRepository;
 import io.github.teoan.log.core.repository.es.EsThrowingLogRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -12,6 +14,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author Teoan
@@ -19,7 +22,7 @@ import javax.annotation.Resource;
  */
 @Component
 @ConditionalOnClass(ElasticsearchRestTemplate.class)
-public class EsLogHandle implements LogHandle {
+public class EsLogHandle extends LogHandle {
 
 
     @Resource
@@ -27,6 +30,9 @@ public class EsLogHandle implements LogHandle {
 
     @Resource
     EsThrowingLogRepository throwingLogRepository;
+
+    @Resource
+    EsOrdinaryLogRepository ordinaryLogRepository;
 
     /**
      * 处理环绕通知
@@ -52,5 +58,15 @@ public class EsLogHandle implements LogHandle {
         BeanUtils.copyProperties(throwingLog,throwingLogDO);
         throwingLogDO.setSeverity(throwingLog.getSeverity().getSeverity());
         throwingLogRepository.save(throwingLogDO);
+    }
+
+
+    /**
+     * 普通日志打印
+     *
+     */
+    @Override
+    void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList) {
+        ordinaryLogRepository.saveAll(getOrdinaryLogDOList(ordinaryLogList));
     }
 }

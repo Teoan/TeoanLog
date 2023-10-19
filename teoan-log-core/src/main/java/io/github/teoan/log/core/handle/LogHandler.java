@@ -1,8 +1,10 @@
 package io.github.teoan.log.core.handle;
 
 import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.OrdinaryLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,11 @@ public class LogHandler {
     @Resource
     List<LogHandle> logHandleList;
 
+    /**
+     * 应用名称
+     */
+    @Value(value = "${spring.application.name}")
+    String appName;
 
 
     /**
@@ -54,5 +61,17 @@ public class LogHandler {
         }
     }
 
+
+    /**
+     * 批量保存普通日志
+     */
+    public void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList){
+        ordinaryLogList.forEach(ordinaryLog -> ordinaryLog.setOperSource(appName));
+        for (LogHandle logHandle : logHandleList) {
+            taskExecutor.execute(() -> {
+                logHandle.saveOrdinaryLog(ordinaryLogList);
+            });
+        }
+    }
 
 }

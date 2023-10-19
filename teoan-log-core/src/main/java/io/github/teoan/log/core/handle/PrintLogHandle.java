@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Slf4j
-public class PrintLogHandle implements LogHandle {
+public class PrintLogHandle extends LogHandle {
 
 
     @Resource
