@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -13,13 +14,16 @@ import java.time.LocalDateTime;
 
 /**
  * @author Teoan
- * @since 2023/9/20 21:35
+ * @since 2023/10/17 23:00
  */
-@SuperBuilder
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class BaseLogDO extends BaseDO implements Serializable {
+@SuperBuilder
+@Document(indexName = "ordinary_log")
+public class OrdinaryLogDO extends BaseDO implements Serializable,MongoDBDO {
+
 
     /**
      * 日志来源 操作模块
@@ -31,59 +35,27 @@ public abstract class BaseLogDO extends BaseDO implements Serializable {
      * 日志级别
      */
     @Field(type = FieldType.Keyword)
-    String severity;
+    String level;
 
     /**
-     * 日志操作名称
-     */
-    @Field(type = FieldType.Keyword)
-    String operName;
-
-    /**
-     * 日志操作描述
+     * 日志内容
      */
     @Field(type = FieldType.Text)
-    String description;
+    String message;
 
 
     /**
-     * 请求路径
-     */
-    @Field(type = FieldType.Keyword)
-    String url;
-
-
-    /**
-     * 请求方式
+     * 线程名称
      */
     @Field(type = FieldType.Text)
-    String httpMethod;
-
-    /**
-     * 方法类名
-     */
-    @Field(type = FieldType.Keyword)
-    String className;
-
-    /**
-     * 方法名
-     */
-    @Field(type = FieldType.Keyword)
-    String method;
-
-    /**
-     * 请求IP
-     */
-    @Field(type = FieldType.Keyword)
-    String ip;
+    String threadName;
 
 
     /**
-     * 方法入参
+     * 日志名称
      */
-    @Field(type = FieldType.Object)
-    Object[] args;
-
+    @Field(type = FieldType.Text)
+    String loggerName;
 
     /**
      * 执行时间

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -14,6 +13,7 @@ import java.io.Serializable;
 
 /**
  * 存储到es的对象
+ *
  * @author Teoan
  * @since 2023/9/19 21:31
  */
@@ -23,13 +23,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "around_log")
-public class AroundLogDO extends BaseLogDO implements Serializable,MongoDBDO {
+public class AroundLogDO extends BaseLogDO implements Serializable, MongoDBDO {
 
-    /**
-     * 主建
-     */
-    @Id
-    private String id;
 
 
     /**
