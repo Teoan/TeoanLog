@@ -6,6 +6,7 @@ import io.github.teoan.log.core.entity.OrdinaryLog;
 import io.github.teoan.log.core.handle.LogHandler;
 import io.github.teoan.log.core.utils.ApplicationContextProvider;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
@@ -28,8 +29,16 @@ public class TeoanLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
     private List<OrdinaryLog> ordinaryLogList = new ArrayList<>();
 
 
+    private Environment environment;
+
+    /**
+     * 批处理数量
+     */
+    private Integer batchSaveNumber = 5;
+
     @Override
     protected void append(ILoggingEvent loggingEvent) {
+        init();
         OrdinaryLog ordinaryLog = new OrdinaryLog();
         BeanUtils.copyProperties(loggingEvent, ordinaryLog);
         ordinaryLog.setDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(loggingEvent.getTimeStamp())
@@ -39,14 +48,29 @@ public class TeoanLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
         // 批量保存
         ordinaryLogList.add(ordinaryLog);
         if (ObjectUtils.isEmpty(logHandler)) {
-            logHandler = ApplicationContextProvider.getBean(LogHandler.class);
-            if (ObjectUtils.isEmpty(logHandler)) {
-                return;
-            }
+            return;
         }
-        if (ordinaryLogList.size() >= 5) {
+        if (ordinaryLogList.size() >= batchSaveNumber) {
             logHandler.saveOrdinaryLog(new ArrayList<>(ordinaryLogList));
             ordinaryLogList.clear();
         }
+
+    }
+
+
+    /**
+     * 初始化数据
+     */
+    private void init() {
+        if (ObjectUtils.isEmpty(logHandler)) {
+            logHandler = ApplicationContextProvider.getBean(LogHandler.class);
+        }
+        if (ObjectUtils.isEmpty(environment)) {
+            environment = ApplicationContextProvider.getBean(Environment.class);
+            if (!ObjectUtils.isEmpty(environment)) {
+                batchSaveNumber = environment.getProperty("teoan.log.batch", Integer.class, 5);
+            }
+        }
+
     }
 }
