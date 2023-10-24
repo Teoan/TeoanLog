@@ -12,3 +12,6 @@ spring:
       username: teoan
       password: passw0rd
       database: teoan
+teoan:
+  log:
+    batch: 20
