@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 日志处理入口
+ *
  * @author Teoan
  * @since 2023/10/16 22:08
  */
@@ -37,41 +39,45 @@ public class LogHandler {
     /**
      * 处理环绕通知
      */
-   public void doAround(AroundLog aroundLog){
-       for (LogHandle logHandle : logHandleList) {
-           taskExecutor.execute(() -> {
-               try {
-                   logHandle.doAround(aroundLog);
-               } catch (Throwable e) {
-                   log.error("LogHandle Error,LogHandle name[{}]", logHandle.getClass().getName(), e);
-               }
-           });
-
-       }
+    public void doAround(AroundLog aroundLog) {
+        doLogHandle(logHandle -> {
+            try {
+                logHandle.doAround(aroundLog);
+            } catch (Throwable e) {
+                log.error("LogHandle Error,LogHandle name[{}]", logHandle.getClass().getName(), e);
+            }
+        });
     }
 
     /**
      * 处理异常返回通知
      */
-    public void doAfterThrowing(ThrowingLog throwingLog){
-        for (LogHandle logHandle : logHandleList) {
-            taskExecutor.execute(() -> {
-                logHandle.doAfterThrowing(throwingLog);
-            });
-        }
+    public void doAfterThrowing(ThrowingLog throwingLog) {
+        doLogHandle(logHandle -> logHandle.doAfterThrowing(throwingLog));
     }
 
 
     /**
      * 批量保存普通日志
      */
-    public void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList){
+    public void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList) {
         ordinaryLogList.forEach(ordinaryLog -> ordinaryLog.setOperSource(appName));
+        doLogHandle(logHandle -> logHandle.saveOrdinaryLog(ordinaryLogList));
+    }
+
+
+    /**
+     * 统一抽象处理方法
+     */
+    private void doLogHandle(Consumer<LogHandle> consumer) {
         for (LogHandle logHandle : logHandleList) {
             taskExecutor.execute(() -> {
-                logHandle.saveOrdinaryLog(ordinaryLogList);
+                try {
+                    consumer.accept(logHandle);
+                } catch (Throwable e) {
+                    log.error("LogHandle Error,LogHandle name[{}]", logHandle.getClass().getName(), e);
+                }
             });
         }
     }
-
 }
