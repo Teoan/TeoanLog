@@ -15,3 +15,9 @@ spring:
 teoan:
   log:
     batch: 20
+    elasticsearch:
+      enabled: true
+    mongodb:
+      enabled: true
+    print:
+      enabled: false

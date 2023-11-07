@@ -8,11 +8,10 @@ import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.repository.es.EsAroundLogRepository;
 import io.github.teoan.log.core.repository.es.EsOrdinaryLogRepository;
 import io.github.teoan.log.core.repository.es.EsThrowingLogRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -20,8 +19,7 @@ import java.util.List;
  * @author Teoan
  * @since 2023/9/19 22:02
  */
-@Component
-@ConditionalOnClass(ElasticsearchRestTemplate.class)
+@Slf4j
 public class EsLogHandle extends LogHandle {
 
 
@@ -33,6 +31,13 @@ public class EsLogHandle extends LogHandle {
 
     @Resource
     EsOrdinaryLogRepository ordinaryLogRepository;
+
+
+    @PostConstruct
+    void init() {
+        log.info("Teoan Log EsLogHandle initialization completed.");
+    }
+
 
     /**
      * 处理环绕通知

@@ -8,11 +8,10 @@ import io.github.teoan.log.core.entity.ThrowingLog;
 import io.github.teoan.log.core.repository.mongo.MongoAroundLogRepository;
 import io.github.teoan.log.core.repository.mongo.MongoOrdinaryLogRepository;
 import io.github.teoan.log.core.repository.mongo.MongoThrowingLogRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -20,8 +19,7 @@ import java.util.List;
  * @author Teoan
  * @since 2023/9/19 22:02
  */
-@Component
-@ConditionalOnClass(MongoTemplate.class)
+@Slf4j
 public class MongoLogHandle extends LogHandle {
 
 
@@ -35,6 +33,11 @@ public class MongoLogHandle extends LogHandle {
     @Resource
     MongoOrdinaryLogRepository ordinaryLogRepository;
 
+
+    @PostConstruct
+    void init() {
+        log.info("Teoan Log MongoLogHandle initialization completed.");
+    }
     /**
      * 处理环绕通知
      *

@@ -1,25 +1,30 @@
 package io.github.teoan.log.core.handle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.AroundLog;
+import io.github.teoan.log.core.entity.BaseLog;
 import io.github.teoan.log.core.entity.ThrowingLog;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
  * @author Teoan
  * @since 2023/9/14 21:58
  */
-@Component
 @Slf4j
 public class PrintLogHandle extends LogHandle {
 
 
     @Resource
     ObjectMapper objectMapper;
+
+
+    @PostConstruct
+    void init() {
+        log.info("Teoan Log PrintLogHandle initialization completed.");
+    }
 
     /**
      * 处理环绕通知

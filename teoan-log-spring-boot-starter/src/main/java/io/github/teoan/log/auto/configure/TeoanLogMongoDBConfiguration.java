@@ -1,6 +1,9 @@
 package io.github.teoan.log.auto.configure;
 
+import io.github.teoan.log.core.handle.MongoLogHandle;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -12,5 +15,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "io.github.teoan.log.core.repository.mongo")
 @Configuration
 @ConditionalOnClass(MongoTemplate.class)
+@ConditionalOnProperty(value = "teoan.log.mongodb.enabled", matchIfMissing = true)
 public class TeoanLogMongoDBConfiguration {
+    @Bean
+    MongoLogHandle getMongoLogHandle() {
+        return new MongoLogHandle();
+    }
 }
