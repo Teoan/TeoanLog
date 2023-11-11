@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class LogHandler {
 
 
-    @Resource
+    @Resource(name = "teoanLogTaskExecutor")
     private ThreadPoolTaskExecutor taskExecutor;
 
     @Resource

@@ -15,7 +15,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories(basePackages = "io.github.teoan.log.core.repository.es")
 @Configuration
 @ConditionalOnClass(ElasticsearchRestTemplate.class)
-@ConditionalOnProperty(value = "teoan.log.elasticsearch.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "teoan.log.enabled.elasticsearch", matchIfMissing = true)
 public class TeoanLogEsConfiguration {
     @Bean
     EsLogHandle getEsLogHandle() {

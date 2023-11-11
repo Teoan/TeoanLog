@@ -2,11 +2,11 @@ package io.github.teoan.log.core.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import io.github.teoan.log.core.config.TeoanLogAutoConfigProperties;
 import io.github.teoan.log.core.entity.OrdinaryLog;
 import io.github.teoan.log.core.handle.LogHandler;
 import io.github.teoan.log.core.utils.ApplicationContextProvider;
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
@@ -29,7 +29,7 @@ public class TeoanLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
     private List<OrdinaryLog> ordinaryLogList = new ArrayList<>();
 
 
-    private Environment environment;
+    private TeoanLogAutoConfigProperties properties;
 
     /**
      * 批处理数量
@@ -65,10 +65,10 @@ public class TeoanLogAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
         if (ObjectUtils.isEmpty(logHandler)) {
             logHandler = ApplicationContextProvider.getBean(LogHandler.class);
         }
-        if (ObjectUtils.isEmpty(environment)) {
-            environment = ApplicationContextProvider.getBean(Environment.class);
-            if (!ObjectUtils.isEmpty(environment)) {
-                batchSaveNumber = environment.getProperty("teoan.log.batch", Integer.class, 5);
+        if (ObjectUtils.isEmpty(properties)) {
+            properties = ApplicationContextProvider.getBean(TeoanLogAutoConfigProperties.class);
+            if (!ObjectUtils.isEmpty(properties)) {
+                batchSaveNumber = properties.getBatch();
             }
         }
 
