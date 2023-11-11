@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2023/11/7 23:13
  */
 @Configuration
-@ConditionalOnProperty(value = "teoan.log.print.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "teoan.log.enabled.print", matchIfMissing = true)
 public class TeoanLogPrintConfiguration {
     @Bean
     PrintLogHandle getPrintLogHandle() {

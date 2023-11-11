@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "io.github.teoan.log.core.repository.mongo")
 @Configuration
 @ConditionalOnClass(MongoTemplate.class)
-@ConditionalOnProperty(value = "teoan.log.mongodb.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "teoan.log.enabled.mongodb", matchIfMissing = true)
 public class TeoanLogMongoDBConfiguration {
     @Bean
     MongoLogHandle getMongoLogHandle() {

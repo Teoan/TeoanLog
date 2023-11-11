@@ -15,9 +15,11 @@ spring:
 teoan:
   log:
     batch: 20
-    elasticsearch:
-      enabled: true
-    mongodb:
-      enabled: true
-    print:
-      enabled: false
+    enabled:
+      elasticsearch: true
+      mongodb: true
+      print: true
+    task:
+      core: 5
+      max: 20
+      queue: 500
