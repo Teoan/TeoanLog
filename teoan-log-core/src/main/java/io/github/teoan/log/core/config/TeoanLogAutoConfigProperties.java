@@ -16,7 +16,6 @@ public class TeoanLogAutoConfigProperties {
 
     public static final String PREFIX = "teoan.log";
 
-    @NestedConfigurationProperty
     Integer batch = 5;
 
     @NestedConfigurationProperty
