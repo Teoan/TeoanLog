@@ -22,7 +22,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "ordinary_log")
-public class OrdinaryLogDO extends BaseDO implements Serializable,MongoDBDO {
+@org.springframework.data.mongodb.core.mapping.Document(value = "ordinary_log")
+public class OrdinaryLogDO extends BaseDO implements Serializable {
 
 
     /**

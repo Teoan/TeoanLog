@@ -23,7 +23,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "around_log")
-public class AroundLogDO extends BaseLogDO implements Serializable, MongoDBDO {
+@org.springframework.data.mongodb.core.mapping.Document(value = "around_log")
+public class AroundLogDO extends BaseLogDO implements Serializable {
 
 
 

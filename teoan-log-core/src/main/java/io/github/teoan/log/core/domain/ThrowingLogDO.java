@@ -22,7 +22,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder
 @Document(indexName = "throwing_log")
-public class ThrowingLogDO extends BaseLogDO implements Serializable,MongoDBDO {
+@org.springframework.data.mongodb.core.mapping.Document(value = "throwing_log")
+public class ThrowingLogDO extends BaseLogDO implements Serializable {
 
 
 
