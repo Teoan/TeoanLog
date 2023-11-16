@@ -69,7 +69,7 @@ public class MongoLogHandle extends LogHandle {
      *
      */
     @Override
-    void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList) {
+    protected void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList) {
         ordinaryLogRepository.saveAll(getOrdinaryLogDOList(ordinaryLogList));
     }
 }

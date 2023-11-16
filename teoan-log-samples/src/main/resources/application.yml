@@ -14,12 +14,12 @@ spring:
       database: teoan
 teoan:
   log:
-    batch: 20
+    batch: 20                #普通日志批处理数量
     enabled:
-      elasticsearch: true
-      mongodb: true
-      print: true
+      elasticsearch: true    #是否启用ES日志处理
+      mongodb: true          #是否启用mongoDB日志处理
+      print: true            #是否启用TeoanLog注解普通日志打印
     task:
-      core: 5
-      max: 20
-      queue: 500
+      core: 5                #日志处理线程数量
+      max: 20                #日志处理线程最大数量
+      queue: 500             #日志处理队列最大数量

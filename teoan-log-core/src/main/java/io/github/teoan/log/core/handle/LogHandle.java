@@ -21,21 +21,21 @@ public abstract class LogHandle {
     /**
      * 处理环绕通知
      */
-    void doAround(AroundLog aroundLog) throws Throwable{
+    protected void doAround(AroundLog aroundLog) throws Throwable {
 
     }
 
     /**
      * 处理异常返回通知
      */
-    void doAfterThrowing(ThrowingLog throwingLog){
+    protected void doAfterThrowing(ThrowingLog throwingLog) {
 
     }
 
     /**
      * 普通日志打印
      */
-    void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList){
+    protected void saveOrdinaryLog(List<OrdinaryLog> ordinaryLogList) {
 
     }
 
