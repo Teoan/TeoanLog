@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.teoan</groupId>
         <artifactId>teoan-log</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>teoan-log-spring-boot-starter</artifactId>
