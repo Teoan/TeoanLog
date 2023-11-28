@@ -1,13 +1,9 @@
 # TeoanLog
-
 一个简单的SpringBoot项目日志收集工具，可根据引入的Spring Data依赖类型将日志写入到es，或者是mongoDB中，同时也提供了相关拓展接口，可自定义拓展实现自己的日志写入逻辑。
 
 ## SpringBoot项目集成
-
 ### TeoanLog依赖
-
 pom文件中引入TeoanLog的starter依赖。
-
 ```xml
 
 <dependency>
@@ -16,11 +12,8 @@ pom文件中引入TeoanLog的starter依赖。
     <version>${version}</version>
 </dependency>
 ```
-
 根据需要引入对应es，或者mongoDB的相关依赖。注意：若两个依赖都存在则都会对应写入。若不想都写入则可以在配置文件中将其关闭。
-
 ### es的依赖
-
 ```xml
 
 <dependency>
@@ -28,9 +21,7 @@ pom文件中引入TeoanLog的starter依赖。
     <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
 </dependency>
 ```
-
 ### mongoDB依赖
-
 ```xml
 
 <dependency>
@@ -39,12 +30,10 @@ pom文件中引入TeoanLog的starter依赖。
 </dependency>
 ```
 
+
 ## 使用
-
 ### TeoanLog注解
-
 在Controller层使用@TeoanLog注解，注解参数包括日志来源，日志级别，日志操作名称，日志操作描述,可根据自己的需要传入,如下：
-
 ```java
 
 /**
@@ -70,6 +59,7 @@ public class TeoanLogController {
     }
 
 
+
     @GetMapping("/testOrdinaryLog")
     @TeoanLog(operSource = "teoanLog", operName = "测试普通日志", severity = LogSeverity.INFO, description = "测试普通日志")
     public void testOrdinaryLog() {
@@ -78,15 +68,10 @@ public class TeoanLogController {
 }
 
 ```
-
 #### 正常的请求
-
 若请求过程中未发生任何异常，则收集的日志被注解函数的入参和出参。根据引入的依赖写入到对应的持久化中间件中。
-
 ##### Es中的记录
-
 Es中会默认创建**around_log**索引，并写入如下记录。
-
 ```json
 {
   "_index": "around_log",
@@ -139,9 +124,7 @@ Es中会默认创建**around_log**索引，并写入如下记录。
 ```
 
 ##### MongoDB中的记录
-
 若引入的是MongoDB的依赖，则对应数据库中会创建集合**around_log**并写入如下数据：
-
 ```json
 {
   "_id": ObjectId(
@@ -197,13 +180,9 @@ Es中会默认创建**around_log**索引，并写入如下记录。
 ```
 
 #### 异常的请求
-
 若请求发生异常，则写入的是对应的异常信息。会记录完整的异常栈信息。
-
 ##### Es中的记录
-
 异常的日志对应写入的是**throwing_log**索引，内容如下：
-
 ```json
 {
   "_index": "throwing_log",
@@ -243,9 +222,7 @@ Es中会默认创建**around_log**索引，并写入如下记录。
 ```
 
 ##### MongoDB中的记录
-
 同样的MongoDB中对应的集合名称也是**throwing_log**，内容如下：
-
 ```json
 {
   "_id": ObjectId(
@@ -286,9 +263,7 @@ Es中会默认创建**around_log**索引，并写入如下记录。
 ```
 
 ### 与LogBack结合使用
-
 在项目的resources目录下新增logback.xml配置，配置中需增加LogAppender的配置，如下：
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
@@ -309,7 +284,6 @@ Es中会默认创建**around_log**索引，并写入如下记录。
 ```
 
 如果能在你的项目代码中使用了类似以下的日志打印方式，那么就无需改动已有的代码，就能将日志也写入到对应的持久化中间件中去。
-
 ```java
 
 /**
@@ -331,9 +305,7 @@ public class TeoanLogController {
 ```
 
 ## 配置说明
-
 TeoanLog提供了以下配置项，可以在SpringBoot项目的配置文件中进行配置。
-
 ```yml
 teoan:
   log:
@@ -351,7 +323,6 @@ teoan:
 ## 拓展日志处理的实现
 
 利用Spring容器，日志的拓展其实很简单，只需要在你的项目中， 继承LogHandle抽象类，然后重写方法即可。以PrintSamplesLogHandle为例：
-
 ```java
 
 /**
