@@ -7,6 +7,8 @@
     <artifactId>teoan-log</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
+    <name>teoan-log</name>
+    <url>https://github.com/Teoan/TeoanLog</url>
     <description>一个简单的SpringBoot项目日志收集工具，可根据引入的Spring
         Data依赖类型将日志写入到es，或者是mongoDB中，同时也提供了相关拓展接口，可自定义拓展实现自己的日志写入逻辑。
     </description>
@@ -131,7 +133,6 @@
                     <failOnError>false</failOnError>
                     <!-- Non-strict mode -->
                     <additionalJOption>-Xdoclint:none</additionalJOption>
-                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>
