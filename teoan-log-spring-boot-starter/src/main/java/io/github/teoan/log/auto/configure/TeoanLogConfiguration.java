@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * 自动装配类
@@ -29,6 +30,7 @@ public class TeoanLogConfiguration {
     ThreadPoolTaskExecutor getThreadPoolTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         TaskProperties task = teoanLogAutoConfigProperties.getTask();
+        task = Optional.ofNullable(task).orElseGet(TaskProperties::new);
         threadPoolTaskExecutor.setCorePoolSize(task.getCore());
         threadPoolTaskExecutor.setMaxPoolSize(task.getMax());
         threadPoolTaskExecutor.setQueueCapacity(task.getQueue());
